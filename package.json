@@ -1,0 +1,25 @@
+{
+  "name": "vcpe-api-server",
+  "version": "0.1.0",
+  "description": "A vCPE dashboard API Server.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev-start": "DEBUG=server,models node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "John-Lin <linton.tw@gmail.com> (http://linton.tw)",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "joi": "^7.0.1",
+    "lodash": "^3.10.1",
+    "morgan": "^1.6.1",
+    "vogels": "^2.1.2"
+  },
+  "devDependencies": {
+    "debug": "^2.2.0"
+  }
+}
