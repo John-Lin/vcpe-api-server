@@ -4,15 +4,16 @@
   "description": "A vCPE dashboard API Server.",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "NODE_ENV=production DEBUG=server,models,configure node ./bin/www",
     "dev-start": "DEBUG=server,models node ./bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha"
   },
   "keywords": [],
   "author": "John-Lin <linton.tw@gmail.com> (http://linton.tw)",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "config": "^1.17.1",
     "express": "^4.13.3",
     "joi": "^7.0.1",
     "lodash": "^3.10.1",
@@ -20,6 +21,9 @@
     "vogels": "^2.1.2"
   },
   "devDependencies": {
-    "debug": "^2.2.0"
+    "debug": "^2.2.0",
+    "mocha": "^2.3.4",
+    "should": "^8.0.2",
+    "supertest": "^1.1.0"
   }
 }
