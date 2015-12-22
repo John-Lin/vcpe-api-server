@@ -9,7 +9,7 @@ let router = express.Router();
 /*
  * POST to create an user.
  */
-router.post('/sigin', (req, res) => {
+router.post('/signup', (req, res) => {
   req.accepts(['application/json']);
 
   if (!(req.body.email && req.body.name)) {
