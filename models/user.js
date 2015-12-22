@@ -7,11 +7,24 @@ const debug = require('debug')('configure');
 // Loading credentials from JSON file
 // vogels.AWS.config.loadFromPath(`./config/credentials.json`);
 
-vogels.AWS.config.update({
-  accessKeyId: config.get('AWS_CREDENTIALS.accessKeyId') || process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: config.get('AWS_CREDENTIALS.secretAccessKey') ||  process.env.AWS_SECRET_ACCESS_KEY,
-  region: config.get('AWS_CREDENTIALS.region') || process.env.AWS_REGION,
-});
+const hasKeyID = config.has('AWS_CREDENTIALS.accessKeyId');
+const hasAccessKey = config.has('AWS_CREDENTIALS.secretAccessKey');
+const hasRegion = config.has('AWS_CREDENTIALS.region');
+
+// If credentials in the config folder
+if (hasKeyID && hasAccessKey && hasRegion) {
+  vogels.AWS.config.update({
+    accessKeyId: config.get('AWS_CREDENTIALS.accessKeyId'),
+    secretAccessKey: config.get('AWS_CREDENTIALS.secretAccessKey'),
+    region:  config.get('AWS_CREDENTIALS.region'),
+  });
+} else { // Credentials not in config folder use env variables
+  vogels.AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+  });
+}
 
 debug(`Now in ${process.env.NODE_ENV} mode!`);
 
