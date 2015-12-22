@@ -12,7 +12,7 @@ describe('vCPE API root route tests', () => {
   });
 });
 
-describe('vCPE users sign in API tests', () => {
+describe('vCPE users sign up API tests', () => {
   it('should create an user and return uuid in json', function(done) {
     this.timeout(4000);
     const user = {
@@ -20,7 +20,7 @@ describe('vCPE users sign in API tests', () => {
       name: 'john',
     };
     supertest(app)
-      .post('/api/v1/users/sigin')
+      .post('/api/v1/users/signup')
       .send(user)
       .expect('Content-Type', /json/)
       .expect(201, done);
