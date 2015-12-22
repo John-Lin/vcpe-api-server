@@ -1,0 +1,7 @@
+{
+  "AWS_CREDENTIALS": {
+    "accessKeyId": "...",
+    "secretAccessKey": "...",
+    "region": "us-east-1"
+  }
+}
