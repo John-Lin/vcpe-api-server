@@ -15,7 +15,9 @@
     "body-parser": "^1.14.2",
     "config": "^1.17.1",
     "express": "^4.13.3",
+    "express-jwt": "^3.3.0",
     "joi": "^7.0.1",
+    "jsonwebtoken": "^5.4.1",
     "lodash": "^3.10.1",
     "morgan": "^1.6.1",
     "vogels": "^2.1.2"

@@ -2,10 +2,10 @@
 let express = require('express');
 let router = express.Router();
 
-/* GET root route. */
+/* GET /api/v1 return version */
 router.get('/', (req, res) => {
   res.json({
-    result: 'Root route',
+    version: 'v1',
   });
 });
 module.exports = router;

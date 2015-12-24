@@ -1,7 +1,6 @@
 'use strict';
-const debug = require('debug')('models-users');
+const debug = require('debug')('models');
 let express = require('express');
-let util = require('util');
 let _ = require('lodash');
 let Account = require('../models/user.js');
 let router = express.Router();
@@ -9,26 +8,28 @@ let router = express.Router();
 /*
  * POST to create an user.
  */
-router.post('/signup', (req, res) => {
+router.post('/accounts', (req, res) => {
   req.accepts(['application/json']);
 
-  if (!(req.body.email && req.body.name)) {
+  if (!(req.body.email && req.body.username)) {
     res.sendStatus(400);
     return;
   }
 
   let params = {
     email: req.body.email,
-    name: req.body.name,
+    username: req.body.username,
     settings: {
-      containerid: 'c01b39c7a35ccc3b081a3e83d2c71fa9a767ebfeb45c6',
-      nickname: 'mycontainer',
+      container: {
+        id: 'c01b39c7a35ccc3b081a3e83d2c71fa9a767ebfeb45c6',
+        name: 'mycontainer',
+      },
       router: {
-        routerStatus: 'OFF',
-        routerWANPort: 1,
-        routerPublicIP: '140.114.99.189',
-        routerDefultGateway: '140.114.99.254',
-        routerLocalNetwork: '192.168.8.0',
+        status: 'OFF',
+        wanPort: 1,
+        publicIP: '140.114.99.189',
+        defultGateway: '140.114.99.254',
+        localNetwork: '192.168.8.0',
       },
     },
   };
@@ -39,7 +40,7 @@ router.post('/signup', (req, res) => {
     if (err) debug(err);
     debug(`${acc.get('email')} created an account at ${acc.get('createdAt')}`);
     res.status(201).json({
-      uuid: acc.get('vCPEUUID'),
+      uuid: acc.get('vCPEID'),
     });
   });
 
@@ -48,12 +49,11 @@ router.post('/signup', (req, res) => {
 /*
  * GET to get a single user data.
  */
-router.get('/:id', (req, res) => {
+router.get('/:username', (req, res) => {
   req.accepts(['application/json']);
-  let uuid = req.params.id;
+  let username = req.params.username;
   Account
-    .scan()
-    .where('vCPEUUID').equals(uuid)
+    .query(username)
     .exec((err, resp) => {
       if (err) debug(err);
 
@@ -63,12 +63,12 @@ router.get('/:id', (req, res) => {
       }
 
       res.status(200).json({
-        uuid: uuid,
+        uuid: (_.pluck(resp.Items, 'attrs'))[0].vCPEID,
         email: (_.pluck(resp.Items, 'attrs'))[0].email,
-        name: (_.pluck(resp.Items, 'attrs'))[0].name,
+        username: (_.pluck(resp.Items, 'attrs'))[0].username,
+        settings: (_.pluck(resp.Items, 'attrs'))[0].settings,
       });
     });
-
 });
 
 module.exports = router;

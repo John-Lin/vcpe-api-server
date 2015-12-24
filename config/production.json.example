@@ -3,5 +3,8 @@
     "accessKeyId": "...",
     "secretAccessKey": "...",
     "region": "us-east-1"
+  },
+  "JWT": {
+    "secret": "xxxx"
   }
 }
