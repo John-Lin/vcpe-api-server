@@ -25,7 +25,7 @@ router.post('/accounts', (req, res) => {
         name: 'mycontainer',
       },
       router: {
-        status: 'OFF',
+        currentState: 'OFF',
         wanPort: 1,
         publicIP: '140.114.99.189',
         defultGateway: '140.114.99.254',

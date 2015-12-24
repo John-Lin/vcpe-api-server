@@ -15,10 +15,27 @@ let password = hasVCPEPassword ?
   config.get('VCPE_ACCOUNT_TEST.password') :
   process.env.VCPE_PASSWORD;
 
-describe('vCPE API Server root test', () => {
-  it('should return status code 200', (done) => {
+describe('vCPE APIs basic tests for routes/index.js', function() {
+  this.timeout(4000);
+  let token = null;
+
+  before((done) => {
     supertest(app)
-      .get('/')
-      .expect(200, done);
+      .post('/auth/login')
+      .send({username: username, password: password})
+      .end(function(err, res) {
+        token = res.body.token;
+        done();
+      });
   });
+
+  describe('vCPE API root route tests', () => {
+    it('should return status code 200', (done) => {
+      supertest(app)
+        .get('/api/v1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200, done);
+    });
+  });
+
 });

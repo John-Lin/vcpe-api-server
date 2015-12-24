@@ -43,7 +43,7 @@ let Account = vogels.define('Account', {
         name: Joi.string(),
       },
       router: {
-        status: Joi.string(),
+        currentState: Joi.string(),
         wanPort: Joi.number(),
         publicIP: Joi.string().ip(),
         defultGateway: Joi.string().ip(),
