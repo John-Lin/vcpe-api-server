@@ -7,103 +7,81 @@ let Account = require('../models/user.js');
 let router = express.Router();
 
 /*
- * PUT to update(turn on/off) router status.
+ * PUT to update(turn on/off) router state.
  */
-router.put('/router/status', (req, res) => {
+router.put('/router/state', (req, res) => {
   req.accepts(['application/json']);
   let username = req.body.username;
-  let routerStatus = req.body.routerStatus;
+  let routerState = req.body.routerState;
 
-  if (!(routerStatus && username)) {
-    res.status(400).json({error: 'routerStatus or username should be set.'});
+  if (!(routerState && username)) {
+    res.status(400).json({error: 'routerState or username should be set.'});
     return;
   }
 
-  Account
-    .query(username)
-    .exec((err, resp) => {
-      if (err) debug(err);
+  let params = {};
+  params.UpdateExpression = 'SET #set.router.currentState = :routerState';
+  params.ConditionExpression = '#user = :username';
+  params.ExpressionAttributeNames = {
+    '#user': 'username',
+    '#set': 'settings',
+  };
+  params.ExpressionAttributeValues = {
+    ':username': username,
+    ':routerState': routerState,
+  };
 
-      if (resp.Count === 0) {
-        res.status(204).json({});
-        return;
-      }
-
-      // retrieve settings data
-      let settings = (_.pluck(resp.Items, 'attrs'))[0].settings;
-
-      // updated the router status
-      settings.router.status = routerStatus;
-
-      // Save into db
-      Account.update({
-        username: username,
-        settings: settings,
-      }, function(err, acc) {
-        if (err) debug(err);
-        res.status(200).json({});
-      });
-
-    });
+  Account.update({username: username}, params, (err, acc) => {
+    if (err) debug(err);
+    res.status(200).json({});
+  });
 });
 
 /*
- * PUT to update router detail settings.
+ * PUT to update router details settings.
  */
-router.put('/router/detail', (req, res) => {
+router.put('/router/details', (req, res) => {
   req.accepts(['application/json']);
   let username = req.body.username;
-  let routerWANPort = req.body.routerWANPort;
-  let routerPublicIP = req.body.routerPublicIP;
-  let routerDefultGateway = req.body.routerDefultGateway;
-  let routerLocalNetwork = req.body.routerLocalNetwork;
+  let routerWANPort = req.body.wanPort;
+  let routerPublicIP = req.body.publicIP;
+  let routerDefultGateway = req.body.defultGateway;
+  let routerLocalNetwork = req.body.localNetwork;
 
-  if (!(username)) {
-    res.status(400).json({error: 'username should be set.'});
+  let hasAll = username && routerWANPort && routerPublicIP &&
+    routerDefultGateway && routerLocalNetwork;
+
+  if (!(hasAll)) {
+    res.status(400).json({
+      error: 'Missing some paramters.',
+    });
     return;
   }
 
-  Account
-    .query(username)
-    .exec((err, resp) => {
-      if (err) debug(err);
+  let params = {};
+  let wanExp = '#set.router.wanPort = :wanPort';
+  let pIPExp = '#set.router.publicIP = :publicIP';
+  let dGWExp = '#set.router.defultGateway = :defultGateway';
+  let locNExp = '#set.router.localNetwork = :localNetwork';
 
-      if (resp.Count === 0) {
-        res.status(204).json({});
-        return;
-      }
+  params.UpdateExpression = `SET ${wanExp}, ${pIPExp}, ${dGWExp}, ${locNExp}`;
+  params.ConditionExpression = '#user = :username';
+  params.ExpressionAttributeNames = {
+    '#user': 'username',
+    '#set': 'settings',
+  };
+  params.ExpressionAttributeValues = {
+    ':username': username,
+    ':wanPort': routerWANPort,
+    ':publicIP': routerPublicIP,
+    ':defultGateway': routerDefultGateway,
+    ':localNetwork': routerLocalNetwork,
+  };
 
-      // retrieve settings data
-      let settings = (_.pluck(resp.Items, 'attrs'))[0].settings;
-
-      // updated the router detail settings.
-      settings.router.wanPort = routerWANPort ?
-        routerWANPort :
-        settings.router.wanPort;
-
-      settings.router.publicIP = routerPublicIP ?
-        routerPublicIP :
-        settings.router.publicIP;
-
-      settings.router.defultGateway = routerDefultGateway ?
-        routerDefultGateway :
-        settings.router.defultGateway;
-
-      settings.router.localNetwork = routerLocalNetwork ?
-        routerLocalNetwork :
-        settings.router.localNetwork;
-
-      // Save into db
-      Account.update({
-        username: username,
-        settings: settings,
-      }, function(err, acc) {
-        if (err) debug(err);
-        res.status(200).json({});
-      });
-
-    });
-
+  Account.update({username: username}, params, (err, acc) => {
+    if (err) debug(err);
+    res.status(200).json({});
+  });
 });
 
 /*
