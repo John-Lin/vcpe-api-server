@@ -29,26 +29,28 @@ if (hasKeyID && hasAccessKey && hasRegion) {
 debug(`Now in ${process.env.NODE_ENV} mode!`);
 
 let Account = vogels.define('Account', {
-  hashKey: 'email',
+  hashKey: 'username',
 
   // add the timestamp attributes (updatedAt, createdAt)
   timestamps: true,
   schema: {
     email: Joi.string().email().required(),
-    name: Joi.string().required(),
-    vCPEUUID: vogels.types.uuid(),
+    username: Joi.string().required(),
+    vCPEID: vogels.types.uuid(),
     settings: {
-      containerid: Joi.string(),
-      nickname: Joi.string(),
+      container: {
+        id: Joi.string(),
+        name: Joi.string(),
+      },
       router: {
-        routerStatus: Joi.string(),
-        routerWANPort: Joi.number(),
-        routerPublicIP: Joi.string().ip(),
-        routerDefultGateway: Joi.string().ip(),
-        routerLocalNetwork: Joi.string().ip(),
+        status: Joi.string(),
+        wanPort: Joi.number(),
+        publicIP: Joi.string().ip(),
+        defultGateway: Joi.string().ip(),
+        localNetwork: Joi.string().ip(),
       },
     },
   },
-  tableName: 'vcpe-account',
+  tableName: 'vcpe-accounts',
 });
 module.exports = Account;
