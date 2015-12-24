@@ -3,5 +3,12 @@
     "accessKeyId": "...",
     "secretAccessKey": "...",
     "region": "eu-central-1"
+  },
+  "JWT": {
+    "secret": "xxxx"
+  },
+  "VCPE_ACCOUNT_TEST": {
+    "username": "...",
+    "password": "..."
   }
 }
